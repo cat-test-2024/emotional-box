@@ -1,0 +1,441 @@
+/* 📁 style.css */
+/* 基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f8f9ff 0%, #eef1ff 100%);
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.app-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* 头部样式 */
+.app-header {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #ff6b8b 0%, #ff8e53 100%);
+    color: white;
+}
+
+.app-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* 步骤指示器 */
+.steps-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background: #f8f9fa;
+}
+
+.step {
+    padding: 10px 25px;
+    margin: 0 10px;
+    border-radius: 25px;
+    background: #e9ecef;
+    color: #666;
+    font-weight: bold;
+    position: relative;
+}
+
+.step.active {
+    background: linear-gradient(135deg, #ff6b8b 0%, #ff8e53 100%);
+    color: white;
+}
+
+/* 内容区 */
+.main-content {
+    padding: 30px;
+}
+
+.content-section {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.content-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 表单组 */
+.form-group {
+    margin-bottom: 30px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: bold;
+    color: #555;
+    font-size: 1.1rem;
+}
+
+.form-group label i {
+    margin-right: 10px;
+    color: #ff6b8b;
+}
+
+/* 颜色选项 */
+.color-options {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.color-option {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.color-option.active {
+    border-color: #333;
+    box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.3);
+}
+
+/* 款式选项 */
+.style-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.style-option {
+    padding: 20px;
+    text-align: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.style-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.style-option.active {
+    border-color: #ff6b8b;
+    background: #fff5f7;
+}
+
+.style-option i {
+    font-size: 2rem;
+    color: #ff6b8b;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* 上传区域 */
+.upload-area {
+    border: 3px dashed #ddd;
+    border-radius: 15px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.upload-area:hover {
+    border-color: #ff6b8b;
+    background: #fff5f7;
+}
+
+.upload-area i {
+    font-size: 3rem;
+    color: #ff6b8b;
+    margin-bottom: 15px;
+}
+
+.upload-hint {
+    color: #888;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.image-preview {
+    margin-top: 15px;
+    display: none;
+}
+
+.image-preview img {
+    max-width: 200px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 输入框 */
+input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #ff6b8b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.1);
+}
+
+textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #ff6b8b;
+}
+
+/* 按钮样式 */
+.btn-primary {
+    background: linear-gradient(135deg, #ff6b8b 0%, #ff8e53 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255, 107, 139, 0.3);
+}
+
+.btn-secondary {
+    background: white;
+    color: #555;
+    border: 2px solid #e0e0e0;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-secondary:hover {
+    border-color: #ff6b8b;
+    color: #ff6b8b;
+}
+
+/* 情绪选择器 */
+.preset-emotions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.emotion-item {
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.emotion-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.emotion-item.active {
+    border-color: #ff6b8b;
+    background: #fff5f7;
+}
+
+.emotion-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* 纸条列表 */
+.message-item {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid #ff6b8b;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.message-actions .btn-small {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+}
+
+/* 盒子预览 */
+.box-preview-container {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.box-preview {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+    border-radius: 15px;
+    position: relative;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.box-lid {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 50px;
+    border-radius: 15px 15px 0 0;
+}
+
+.box-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 20px;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* 分享链接 */
+.share-link-box {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.link-display {
+    word-break: break-all;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 2px solid #e0e0e0;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+/* 页脚 */
+.app-footer {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    color: #666;
+    border-top: 1px solid #eee;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .app-container {
+        border-radius: 10px;
+    }
+    
+    .app-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .steps-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .step {
+        width: 80%;
+        margin: 5px 0;
+    }
+    
+    .main-content {
+        padding: 15px;
+    }
+    
+    .style-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .preset-emotions {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #ff6b8b 0%, #ff8e53 100%);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #ff5577 0%, #ff7c40 100%);
+}

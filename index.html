@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情绪盒子 - 制作专属情感礼物</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基本样式 */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: #333; min-height: 100vh; padding: 20px; }
+        
+        /* 容器 */
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); overflow: hidden; }
+        
+        /* 头部 */
+        .header { text-align: center; padding: 30px; background: linear-gradient(135deg, #ff6b8b 0%, #ff8e53 100%); color: white; }
+        .header h1 { font-size: 2.8rem; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 15px; }
+        
+        /* 主布局 - 两栏设计 */
+        .main-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 30px; min-height: 600px; }
+        @media (max-width: 992px) { .main-layout { grid-template-columns: 1fr; } }
+        
+        /* 设计区域 */
+        .design-area { padding-right: 30px; border-right: 2px solid #f0f0f0; }
+        @media (max-width: 992px) { .design-area { padding-right: 0; border-right: none; border-bottom: 2px solid #f0f0f0; padding-bottom: 30px; } }
+        
+        /* 步骤指示器 */
+        .steps { display: flex; justify-content: center; padding: 20px; background: #f8f9fa; gap: 40px; }
+        .step { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .step-circle { width: 40px; height: 40px; border-radius: 50%; background: #e0e0e0; color: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .step.active .step-circle { background: linear-gradient(135deg, #ff6b8b 0%, #ff8e53 100%); color: white; }
+        
+        /* 表单元素 */
+        .form-group { margin-bottom: 30px; }
+        .form-group label { display: block; margin-bottom: 12px; font-weight: bold; color: #555; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .form-group label i { color: #ff6b8b; }
+        input[type="text"], textarea { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem; transition: all 0.3s; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: #ff6b8b; box-shadow: 0 0 0 3px rgba(255,107,139,0.1); }
+        textarea { min-height: 120px; resize: vertical; }
+        
+        /* 颜色选择 - 调色盘 */
+        .color-section { margin-bottom: 30px; }
+        .color-options { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; }
+        .color-option { width: 50px; height: 50px; border-radius: 10px; cursor: pointer; border: 3px solid transparent; transition: all 0.3s; }
+        .color-option.active { border-color: #333; box-shadow: 0 0 0 3px rgba(255,107,139,0.3); transform: scale(1.1); }
+        
+        /* 调色盘 */
+        .color-picker-container { margin-top: 20px; }
+        .color-picker-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .custom-color-btn { background: #f0f0f0; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
+        .color-picker { display: none; width: 100%; height: 40px; border: none; cursor: pointer; border-radius: 5px; }
+        .color-picker.active { display: block; }
+        .color-hex { font-family: monospace; background: #f8f9fa; padding: 5px 10px; border-radius: 5px; margin-top: 10px; }
+        
+        /* DIY区域 */
+        .diy-section { margin-top: 30px; }
+        .upload-area { border: 3px dashed #ddd; border-radius: 15px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.3s; margin-top: 15px; }
+        .upload-area:hover { border-color: #ff6b8b; background: rgba(255,107,139,0.03); }
+        .upload-area i { font-size: 3rem; color: #ff6b8b; margin-bottom: 15px; }
+        #imagePreview { margin-top: 20px; text-align: center; }
+        .preview-image { max-width: 200px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 10px; }
+        
+        /* 按钮 */
+        .btn { padding: 15px 30px; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 10px; margin: 10px 5px; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #ff6b8b 0%, #ff8e53 100%); color: white; box-shadow: 0 5px 15px rgba(255,107,139,0.3); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,107,139,0.4); }
+        .btn-secondary { background: white; color: #555; border: 2px solid #e0e0f0; }
+        .btn-secondary:hover { border-color: #ff6b8b; color: #ff6b8b; }
+        
+        /* 预览区域 */
+        .preview-area { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .preview-title { font-size: 1.8rem; margin-bottom: 30px; color: #555; text-align: center; }
+        
+        /* 盒子预览 */
+        .box-preview-container { position: relative; width: 300px; height: 300px; perspective: 1000px; }
+        .box-3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: rotateX(-10deg) rotateY(-20deg); transition: transform 0.5s ease; }
+        .box-side { position: absolute; background: #ff6b8b; border: 2px solid rgba(0,0,0,0.1); }
+        .box-front, .box-back { width: 200px; height: 200px; }
+        .box-front { transform: translateZ(100px); background-size: cover; background-position: center; }
+        .box-back { transform: translateZ(-100px) rotateY(180deg); }
+        .box-top, .box-bottom { width: 200px; height: 100px; }
+        .box-top { transform: rotateX(90deg) translateZ(100px); background: rgba(0,0,0,0.1); }
+        .box-bottom { transform: rotateX(-90deg) translateZ(100px); background: rgba(0,0,0,0.2); }
+        .box-left, .box-right { width: 100px; height: 200px; }
+        .box-left { transform: rotateY(-90deg) translateZ(100px); }
+        .box-right { transform: rotateY(90deg) translateZ(100px); }
+        
+        .box-title-display { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); text-align: center; z-index: 10; width: 80%; }
+        
+        /* 盒子控制 */
+        .box-controls { margin-top: 30px; display: flex; gap: 10px; justify-content: center; }
+        .box-control-btn { width: 40px; height: 40px; border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        /* 情绪区域 */
+        .emotion-section { display: none; }
+        .emotion-section.active { display: block; }
+        
+        /* 自定义情绪按钮 */
+        .add-custom-emotion { margin: 20px 0; text-align: center; }
+        
+        /* 纸条编辑区 */
+        .message-editor { margin-top: 30px; }
+        .current-emotion { font-size: 1.2rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .message-counter { text-align: right; color: #666; margin-bottom: 15px; }
+        
+        /* 分享区域 */
+        .share-section { display: none; text-align: center; }
+        .share-section.active { display: block; }
+        .share-link-box { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .link-display { word-break: break-all; padding: 15px; background: white; border-radius: 8px; margin-bottom: 15px; border: 2px solid #e0e0e0; font-family: monospace; }
+        
+        /* 页脚 */
+        .footer { text-align: center; padding: 20px; background: #f8f9fa; color: #666; border-top: 1px solid #eee; }
+        
+        /* 模态框 */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; border-radius: 15px; padding: 30px; width: 90%; max-width: 500px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-modal { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #666; }
+        
+        /* 情绪卡片样式 */
+        .emotion-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .emotion-card:hover {
+            border-color: #ff6b8b;
+            box-shadow: 0 5px 20px rgba(255,107,139,0.1);
+            transform: translateY(-3px);
+        }
+
+        .emotion-card.active {
+            border-color: #ff6b8b;
+            background: linear-gradient(135deg, #fff5f7, #ffeef1);
+        }
+
+        .emotion-card.dragging {
+            opacity: 0.5;
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .emotion-card.empty {
+            opacity: 0.6;
+            border-style: dashed;
+        }
+
+        .emotion-card.hidden {
+            display: none;
+        }
+
+        .emotion-card-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .emotion-card-emoji {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .emotion-card-info {
+            flex: 1;
+        }
+
+        .emotion-card-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .emotion-card-count {
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .emotion-card-count i {
+            color: #ff6b8b;
+        }
+
+        .emotion-card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .emotion-action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .emotion-action-btn:hover {
+            border-color: #ff6b8b;
+            color: #ff6b8b;
+            transform: translateY(-2px);
+        }
+
+        .emotion-action-btn.delete:hover {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .emotion-action-btn.move {
+            cursor: move;
+        }
+
+        .emotion-action-btn.move:hover {
+            border-color: #36d1dc;
+            color: #36d1dc;
+        }
+
+        /* 纸条项目样式 */
+        .message-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff6b8b;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .message-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .message-card.selected {
+            background: #f0f7ff;
+            border-left-color: #36d1dc;
+        }
+
+        .message-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .message-index {
+            font-weight: bold;
+            color: #666;
+            background: #f8f9fa;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .message-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .message-action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .message-action-btn.edit:hover {
+            border-color: #36d1dc;
+            color: #36d1dc;
+        }
+
+        .message-action-btn.delete:hover {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .message-action-btn.select:hover {
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .message-content {
+            line-height: 1.6;
+            color: #333;
+            padding: 5px 0;
+            word-break: break-word;
+        }
+
+        .message-checkbox {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* 批量操作栏 */
+        .batch-actions-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+            display: none;
+        }
+
+        .batch-actions-bar.active {
+            display: flex;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .batch-count {
+            font-weight: bold;
+            color: #ff6b8b;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        /* 删除按钮样式 */
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+            transform: translateY(-3px);
+        }
+
+        /* 拖拽手柄 */
+        .drag-handle {
+            cursor: move;
+            color: #999;
+            padding: 5px;
+        }
+
+        .drag-handle:hover {
+            color: #666;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .container { border-radius: 10px; }
+            .header h1 { font-size: 2rem; }
+            .steps { flex-direction: column; align-items: center; gap: 20px; }
+            .box-preview-container { width: 250px; height: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1><span>📦</span> 情绪盒子 <span>❤️</span></h1>
+            <p>为TA定制一份专属的情感礼物，每个情绪都藏着你想说的话</p>
+        </div>
+        
+        <!-- 步骤指示器 -->
+        <div class="steps">
+            <div class="step active" id="step1">
+                <div class="step-circle">1</div>
+                <div>设计盒子</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-circle">2</div>
+                <div>填写纸条</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-circle">3</div>
+                <div>完成分享</div>
+            </div>
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="main-layout">
+            <!-- 左侧：设计区域 -->
+            <div class="design-area">
+                <!-- 设计盒子 -->
+                <div class="design-section active" id="designSection">
+                    <h2><i class="fas fa-palette"></i> 第一步：设计你的情绪盒子</h2>
+                    
+                    <div class="form-group">
+                        <label for="boxTitle"><i class="fas fa-tag"></i> 盒子名称</label>
+                        <input type="text" id="boxTitle" placeholder="给你的情绪盒子起个温暖的名字..." maxlength="20" value="我的情绪盒子">
+                    </div>
+                    
+                    <!-- 颜色选择 -->
+                    <div class="color-section">
+                        <div class="form-group">
+                            <label><i class="fas fa-fill-drip"></i> 盒子颜色</label>
+                            <div class="color-options">
+                                <div class="color-option active" data-color="#ff6b8b" style="background:#ff6b8b;"></div>
+                                <div class="color-option" data-color="#ff8e53" style="background:#ff8e53;"></div>
+                                <div class="color-option" data-color="#ffd166" style="background:#ffd166;"></div>
+                                <div class="color-option" data-color="#06d6a0" style="background:#06d6a0;"></div>
+                                <div class="color-option" data-color="#118ab2" style="background:#118ab2;"></div>
+                                <div class="color-option" data-color="#9d4edd" style="background:#9d4edd;"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 调色盘 -->
+                        <div class="color-picker-container">
+                            <div class="color-picker-label">
+                                <span>自定义颜色：</span>
+                                <button class="custom-color-btn" id="toggleColorPicker">
+                                    <i class="fas fa-sliders-h"></i> 调色盘
+                                </button>
+                            </div>
+                            <input type="color" id="colorPicker" class="color-picker" value="#ff6b8b">
+                            <div class="color-hex">当前颜色: <span id="currentColorHex">#ff6b8b</span></div>
+                        </div>
+                    </div>
+                    
+                    <!-- DIY贴纸 -->
+                    <div class="diy-section">
+                        <div class="form-group">
+                            <label><i class="fas fa-sticky-note"></i> DIY盒子贴纸（可选）</label>
+                            <p style="color:#666; margin-bottom:15px; font-size:0.9rem;">上传图片或贴纸，它会显示在盒子表面</p>
+                            
+                            <div class="upload-area" id="uploadArea">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>点击上传图片或贴纸</p>
+                                <p style="color:#888; font-size:0.9rem; margin-top:5px;">支持 JPG、PNG、GIF 格式</p>
+                                <input type="file" id="imageUpload" accept="image/*" hidden>
+                            </div>
+                            
+                            <div id="imagePreview"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="creatorName"><i class="fas fa-user"></i> 你的名字（可选）</label>
+                        <input type="text" id="creatorName" placeholder="让TA知道是谁送的...">
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 40px;">
+                        <button class="btn btn-primary" id="nextToEmotions">
+                            下一步：填写情绪纸条 <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 填写纸条 -->
+                <div class="emotion-section" id="emotionSection">
+                    <h2><i class="fas fa-sticky-note"></i> 第二步：为每种情绪填写纸条</h2>
+                    
+                    <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin:20px 0;">
+                        <p><i class="fas fa-info-circle"></i> 为每种情绪准备多张纸条，TA可以根据心情随机抽取</p>
+                    </div>
+                    
+                    <!-- 情绪管理部分 -->
+                    <div class="emotions-management">
+                        <div class="emotions-header" style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0;">
+                            <h3 style="margin: 0;"><i class="fas fa-list"></i> 情绪表情管理</h3>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-secondary" id="addCustomEmotionBtn">
+                                    <i class="fas fa-plus-circle"></i> 添加自定义情绪
+                                </button>
+                                <button class="btn btn-secondary" id="sortEmotionsBtn" title="拖动情绪卡片进行排序">
+                                    <i class="fas fa-sort"></i> 排序模式
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="emotion-hint" style="background: #fff8e1; padding: 12px; border-radius: 8px; margin-bottom: 20px; color: #856404; border-left: 4px solid #ffc107;">
+                            <p style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>提示：可以删除不需要的情绪（避免空信封），拖动情绪卡片调整顺序</span>
+                            </p>
+                        </div>
+                        
+                        <div class="emotions-container" id="emotionsContainer">
+                            <!-- 动态生成情绪卡片 -->
+                        </div>
+                        
+                        <div style="margin-top: 30px; text-align: center;">
+                            <button class="btn btn-secondary" id="toggleEmptyEmotions">
+                                <i class="fas fa-eye-slash"></i> 隐藏无纸条的情绪
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 纸条编辑区 -->
+                    <div class="message-editor">
+                        <div class="current-emotion" id="currentEmotion">
+                            <span id="currentEmoji">😊</span>
+                            <span>写下当TA感到 <strong id="currentName">开心</strong> 时，你想说的话：</span>
+                        </div>
+                        
+                        <div class="message-counter">
+                            已添加 <span id="messageCount">0</span> 张纸条
+                        </div>
+                        
+                        <textarea id="messageInput" placeholder="写下你的心里话... (按Ctrl+Enter快速添加)"></textarea>
+                        
+                        <!-- 纸条管理部分 -->
+                        <div class="messages-management">
+                            <div class="messages-header" style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0;">
+                                <h4 style="margin: 0;"><i class="fas fa-sticky-note"></i> 纸条管理 - <span id="currentEmotionNameDisplay">开心</span></h4>
+                                <div style="color: #666; font-size: 0.9rem;">
+                                    共 <span id="totalMessageCount">0</span> 张纸条
+                                </div>
+                            </div>
+                            
+                            <div class="messages-list" id="messagesList" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                                <!-- 动态生成 -->
+                            </div>
+                            
+                            <div style="margin-top: 20px; text-align: center;">
+                                <div style="display: inline-flex; gap: 10px; background: #f8f9fa; padding: 15px; border-radius: 10px;">
+                                    <button class="btn btn-primary" id="addMessageBtn">
+                                        <i class="fas fa-plus"></i> 添加新纸条
+                                    </button>
+                                    <button class="btn btn-secondary" id="batchDeleteBtn" style="display: none;">
+                                        <i class="fas fa-trash-alt"></i> 批量删除
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 40px;">
+                        <button class="btn btn-secondary" id="prevToDesign">
+                            <i class="fas fa-arrow-left"></i> 上一步
+                        </button>
+                        <button class="btn btn-primary" id="finishBox">
+                            完成制作 <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 完成分享 -->
+                <div class="share-section" id="shareSection">
+                    <h2><i class="fas fa-gift"></i> 第三步：情绪盒子制作完成！</h2>
+                    
+                    <!-- 分享链接 -->
+                    <div class="share-link-box">
+                        <h3><i class="fas fa-share-alt"></i> 分享你的情绪盒子</h3>
+                        <p>复制下面的链接发送给TA：</p>
+                        
+                        <div class="link-display" id="generatedLink">
+                            正在生成链接...
+                        </div>
+                        
+                        <button class="btn btn-primary" id="copyLinkBtn">
+                            <i class="fas fa-copy"></i> 复制链接
+                        </button>
+                        
+                        <div style="margin-top: 20px; color: #666;">
+                            <p><i class="fas fa-lightbulb"></i> 提示：</p>
+                            <ul style="text-align: left; margin: 10px 0; padding-left: 20px;">
+                                <li>1. TA收到链接后，点击即可打开情绪盒子</li>
+                                <li>2. 根据当前心情选择对应的情绪信封</li>
+                                <li>3. 随机抽取一张纸条阅读</li>
+                                <li>4. 抽过的纸条不会重复出现</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-secondary" id="makeAnother">
+                            <i class="fas fa-plus"></i> 制作新盒子
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧：盒子预览区域 -->
+            <div class="preview-area">
+                <h3 class="preview-title">盒子预览</h3>
+                
+                <!-- 3D盒子预览 -->
+                <div class="box-preview-container">
+                    <div class="box-3d" id="box3d">
+                        <!-- 盒子各面 -->
+                        <div class="box-side box-front" id="boxFront"></div>
+                        <div class="box-side box-back"></div>
+                        <div class="box-side box-top"></div>
+                        <div class="box-side box-bottom"></div>
+                        <div class="box-side box-left"></div>
+                        <div class="box-side box-right"></div>
+                        
+                        <!-- 盒子标题 -->
+                        <div class="box-title-display" id="boxTitleDisplay">我的情绪盒子</div>
+                    </div>
+                </div>
+                
+                <!-- 盒子控制 -->
+                <div class="box-controls">
+                    <button class="box-control-btn" id="rotateLeft" title="向左旋转">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                    <button class="box-control-btn" id="resetRotation" title="重置视角">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="box-control-btn" id="rotateRight" title="向右旋转">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <!-- 当前设置显示 -->
+                <div style="margin-top: 30px; text-align: center; color: #666;">
+                    <p>当前设置：</p>
+                    <p id="currentSettings">名称：我的情绪盒子 | 颜色：#ff6b8b</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 页脚 -->
+        <div class="footer">
+            <p>情绪盒子 · 用数字珍藏情感瞬间 | 打开即用，无需注册</p>
+        </div>
+    </div>
+
+    <!-- 自定义情绪模态框 -->
+    <div class="modal" id="customEmotionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> 添加自定义情绪</h3>
+                <button class="close-modal" id="closeCustomModal">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="customEmotionName">情绪名称</label>
+                <input type="text" id="customEmotionName" placeholder="例如：兴奋、紧张、怀念...">
+            </div>
+            
+            <div class="form-group">
+                <label for="customEmotionEmoji">表情符号</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="customEmotionEmoji" placeholder="输入一个emoji，如 😊" maxlength="2">
+                    <button class="btn btn-secondary" id="emojiPickerBtn">
+                        <i class="far fa-smile"></i> 选择表情
+                    </button>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" id="saveCustomEmotion">
+                    <i class="fas fa-save"></i> 保存情绪
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 纸条编辑模态框 -->
+    <div class="modal" id="editMessageModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> 编辑纸条</h3>
+                <button class="close-modal" id="closeEditModal">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="editMessageText">纸条内容</label>
+                <textarea id="editMessageText" rows="6" placeholder="写下你想说的话..." style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem; resize: vertical;"></textarea>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <div style="color: #666; font-size: 0.9rem;">
+                    字数：<span id="editCharCount">0</span>/500
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" id="cancelEdit">
+                        <i class="fas fa-times"></i> 取消
+                    </button>
+                    <button class="btn btn-primary" id="saveEditedMessage">
+                        <i class="fas fa-save"></i> 保存修改
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量删除确认模态框 -->
+    <div class="modal" id="batchDeleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> 确认批量删除</h3>
+                <button class="close-modal" id="closeBatchDeleteModal">&times;</button>
+            </div>
+            
+            <div style="padding: 20px; text-align: center;">
+                <i class="fas fa-trash-alt" style="font-size: 3rem; color: #dc3545; margin-bottom: 20px;"></i>
+                <p style="font-size: 1.2rem; margin-bottom: 15px;">确定要删除选中的 <span id="selectedCount">0</span> 张纸条吗？</p>
+                <p style="color: #666; margin-bottom: 25px;">此操作无法撤销，请谨慎操作。</p>
+                
+                <div style="display: flex; justify-content: center; gap: 15px;">
+                    <button class="btn btn-secondary" id="cancelBatchDelete">
+                        <i class="fas fa-times"></i> 取消
+                    </button>
+                    <button class="btn btn-danger" id="confirmBatchDelete" style="background: #dc3545; border-color: #dc3545;">
+                        <i class="fas fa-trash"></i> 确认删除
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 批量操作栏 -->
+    <div class="batch-actions-bar" id="batchActionsBar">
+        <div class="batch-count">
+            已选中 <span id="batchSelectedCount">0</span> 张纸条
+        </div>
+        <button class="btn btn-secondary" id="batchSelectAll">
+            <i class="fas fa-check-square"></i> 全选
+        </button>
+        <button class="btn btn-danger" id="batchDelete">
+            <i class="fas fa-trash"></i> 删除选中
+        </button>
+        <button class="btn btn-secondary" id="batchCancel">
+            <i class="fas fa-times"></i> 取消
+        </button>
+    </div>
+
+    <!-- JavaScript文件 -->
+    <script src="script.js"></script>
+</body>
+</html>
